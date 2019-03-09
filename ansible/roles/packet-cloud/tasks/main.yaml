@@ -1,0 +1,12 @@
+---
+
+# TODO: use count option, %d in hostname
+- name: create physical servers in packet cloud
+  packet_device:
+    project_id: "{{ lookup('env','PACKET_PROJECT_ID') }}"
+    hostnames: "stx-workshop-{{ item }}"
+    operating_system: "{{ packet_os }}"
+    plan: "{{ packet_plan }}"
+    facility: "{{ packet_facility }}"
+    state: "active"
+  with_sequence: start=1 end={{ num_students }}

@@ -1,0 +1,9 @@
+---
+
+# Each student will get a baremetal node configured for them
+num_students: 1
+
+# packet config 
+packet_os: "ubuntu_16_04"
+packet_facility: "ewr1"
+packet_plan: "c2.medium.x86"
