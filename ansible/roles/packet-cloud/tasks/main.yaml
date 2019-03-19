@@ -1,7 +1,7 @@
 ---
 
 # TODO: add retries, occasionally get failures in packet
-- name: "{{ packet_node_state }}" physical servers in packet cloud
+- name: add or remove physical servers in packet cloud
   packet_node:
     project_id: "{{ lookup('env','PACKET_PROJECT_ID') }}"
     hostnames: "stx-workshop-%d"
