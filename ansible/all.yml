@@ -1,4 +1,10 @@
 ---
 
 - import_playbook: provision-nodes.yml
+
+- hosts: localhost
+  gather_facts: False
+  tasks:
+    - meta: refresh_inventory
+
 - import_playbook: configure-nodes.yml
