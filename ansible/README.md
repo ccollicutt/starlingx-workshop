@@ -33,6 +33,12 @@ export PACKET_API_TOKEN=<token>
 export PACKET_KEY_NAME=<key name>
 ```
 
+Set the number of students. Either:
+
+1. Do nothing, and by default two students are assumed
+1. Edit the `group_vars/all.yml` file and change the number of students
+1. Provide `num_students` on the command line when invoking the playbook, eg. `-e "num_students=10"`
+
 Run the playbook.
 
 *NOTE: It may take several minutes for the packet.com nodes to become available.*
