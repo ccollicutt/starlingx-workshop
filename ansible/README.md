@@ -1,7 +1,8 @@
 # starlingx-workshop
 
+The Ansible playbooks and roles in this directory will create as many Packet.com nodes are needed in which to run a particular workshop. Each student is, at this time, expected to get one physical node. That physical node will be created and configured to run StarlingX in a libvirt based virtual machine. Once this playbook completes students will have a place to start their workshop.
 
-## Lab Setup
+## Workshop Deployment
 
 Clone this repository.
 
@@ -46,7 +47,7 @@ At this point you should have as many nodes as you requested ready to run `virsh
 
 Set `packet_node_state` to absent.
 
-*NOTE: This will delete all of the workshop nodes in your Packet.com project.*
+*NOTE: This will delete all of the workshop nodes in your Packet.com project!*
 
 ```
 ansible-playbook provision-nodes.yml -e "packet_node_state=absent"
