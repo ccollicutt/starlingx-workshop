@@ -1,0 +1,66 @@
+---
+
+# Following https://docs.starlingx.io/installation_guide/latest/installation_libvirt_qemu.html 
+# and related installation scripts.
+
+- name: ensure required packages are present
+  apt:
+    name: "{{ hypervisor_packages }}"
+    update_cache: True 
+    cache_valid_time: 600
+
+# NOTE: not sure why this is needed but is in above docs at this time
+- name: install qemu.conf 
+  template:
+    src: "etc/libvirt/qemu.conf"
+    dest: "/etc/libvirt/qemu.conf"
+  notify:
+    - restart libvirt-bin
+
+# FIXME
+# If bridges do not exist, create them
+- name: setup bridge 
+  shell: |
+    ip link sh {{ bridge_basename }}{{ item }} || \
+    (ip link add {{ bridge_basename }}{{ item }} type bridge && \
+    ip link set {{ bridge_basename }}{{ item }} up)
+  with_sequence: start=1 end=4
+
+# FIXME
+# Set ip on first "bridge" interface
+- name: configure external IP 
+  shell: |
+    ( ip ad sh {{ bridge_basename }}1 | grep {{ external_ip }} ) || \
+    ( ip addr add {{ external_ip }} dev {{ bridge_basename }}1 )
+
+- name: configure iptables masquerading for external network
+  iptables:
+    chain: POSTROUTING
+    table: nat
+    source: "{{ external_network }}"
+    jump: MASQUERADE
+
+- name: download stx iso 
+  get_url:
+    url: "{{ iso_image }}"
+    dest: "{{ iso_image_install_dir }}/{{ iso_image | basename }}"
+    mode: 0440
+
+- name: ensure virtual machine backing images exist 
+  shell: |
+    qemu-img create -f qcow2 \
+    /var/lib/libvirt/images/{{ controller_name }}-{{ item.index }}.img \
+    {{ item.size }}G
+  args:
+    creates: "/var/lib/libvirt/images/{{ controller_name }}-{{ item.index }}.img"
+  with_items: "{{ controller_disks }}"
+
+- name: ensure libvirt-python is installed (for virt module)
+  apt:
+    name: "python-libvirt"
+    
+- name: define controller node 
+  virt:
+    command: "define"
+    name: "{{ controller_name }}"
+    xml:  "{{ lookup('template', 'etc/stx-workshop/controller_allinone.xml') }}"

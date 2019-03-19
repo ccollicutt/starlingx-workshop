@@ -1,0 +1,9 @@
+---
+
+- hosts:
+    - tag_stx_workshop
+  pre_tasks:
+    - apt:
+        update_cache: true
+  roles:
+    - hypervisor

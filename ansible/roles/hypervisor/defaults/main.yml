@@ -1,0 +1,23 @@
+---
+
+iso_image: "http://mirror.starlingx.cengn.ca/mirror/starlingx/master/centos/20190318T013000Z/outputs/iso/bootimage.iso"
+iso_image_install_dir: "/var/lib/libvirt/images"
+
+controller_name: "controller-0"
+
+controller_disks:
+  - name: "disk0"
+    index: 0
+    size: 600
+  - name: "disk1"
+    index: 1
+    size: 200
+  - name: "disk2"
+    index: 2
+    size: 200
+
+bridge_basename: "stxbr"
+# FIXME: this will fall within 10/8 from packet
+external_network: "10.10.10.0/24"
+external_ip: "10.10.10.1/24"
+external_netmask_cidr: 24

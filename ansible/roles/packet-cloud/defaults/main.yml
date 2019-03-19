@@ -1,0 +1,8 @@
+---
+
+workshop_tag: "stx_workshop"
+
+# packet config 
+packet_os: "ubuntu_16_04"
+packet_facility: "ewr1"
+packet_plan: "c2.medium.x86"

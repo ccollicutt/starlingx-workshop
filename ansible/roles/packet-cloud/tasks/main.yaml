@@ -1,12 +1,19 @@
 ---
 
-# TODO: use count option, %d in hostname
+# TODO: add retries, occasionally get failures in packet
 - name: create physical servers in packet cloud
-  packet_device:
+  packet_node:
     project_id: "{{ lookup('env','PACKET_PROJECT_ID') }}"
-    hostnames: "stx-workshop-{{ item }}"
+    hostnames: "stx-workshop-%d"
+    count: "{{ num_students }}"
     operating_system: "{{ packet_os }}"
     plan: "{{ packet_plan }}"
     facility: "{{ packet_facility }}"
     state: "active"
-  with_sequence: start=1 end={{ num_students }}
+    tags: 
+      - "{{ workshop_tag }}"
+  register: packet_nodes
+
+- debug:
+    msg: "{{ packet_nodes }}"
+    verbosity: 2

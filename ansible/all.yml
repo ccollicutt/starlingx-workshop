@@ -1,0 +1,4 @@
+---
+
+- import_playbook: provision-nodes.yml
+- import_playbook: configure-nodes.yml
