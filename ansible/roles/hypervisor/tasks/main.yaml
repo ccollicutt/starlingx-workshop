@@ -9,6 +9,38 @@
     update_cache: True 
     cache_valid_time: 600
 
+- name: ensure lvm services are running and enabled 
+  service:
+    name: "{{ item }}"
+    state: "started"
+    enabled: True
+  with_items: "{{ lvm_services }}"
+
+# NOTE(curtis): This is a pretty brutal hack :)
+# FIXME shell
+- name: create a lvm of unused disks and mount to /var/lib/libvirt/images
+  shell: |
+    disks=""
+    for i in `lsblk -i -o kname -n | grep -v "[0-9]"`; do
+      if pvcreate /dev/$i; then 
+        disks="$disks /dev/$i "
+      fi
+    done
+    if [ -z "$disks" ]; then
+      echo "all disks already used"
+    else
+      echo "disks to be used are $disks"
+    fi
+    if ! lvs libvirt/images; then
+      vgcreate libvirt $disks 
+      lvcreate -n images -l 100%FREE libvirt
+    fi 
+    if ! mount | grep libvirt-images; then
+      mkfs.ext4 /dev/libvirt/images 
+      mount /dev/libvirt/images /var/lib/libvirt/images
+    fi
+
+
 # NOTE: not sure why this is needed but is in above docs at this time
 - name: install qemu.conf 
   template:
@@ -17,7 +49,7 @@
   notify:
     - restart libvirt-bin
 
-# FIXME
+# FIXME shell
 # If bridges do not exist, create them
 - name: setup bridge 
   shell: |
@@ -26,7 +58,7 @@
     ip link set {{ bridge_basename }}{{ item }} up)
   with_sequence: start=1 end=4
 
-# FIXME
+# FIXME shell
 # Set ip on first "bridge" interface
 - name: configure external IP 
   shell: |

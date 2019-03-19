@@ -3,3 +3,4 @@
 hypervisor_packages:
   - libvirt-bin 
   - qemu-system 
+  - lvm2

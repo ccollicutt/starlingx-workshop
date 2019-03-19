@@ -5,6 +5,7 @@
 - hosts: localhost
   gather_facts: False
   tasks:
-    - meta: refresh_inventory
+    - name: refresh inventory after potential node creation
+      meta: refresh_inventory
 
 - import_playbook: configure-nodes.yml

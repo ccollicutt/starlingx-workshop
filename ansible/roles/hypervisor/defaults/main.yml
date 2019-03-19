@@ -21,3 +21,7 @@ bridge_basename: "stxbr"
 external_network: "10.10.10.0/24"
 external_ip: "10.10.10.1/24"
 external_netmask_cidr: 24
+
+lvm_services:
+  - lvm2-lvmetad.service
+  - lvm2-lvmetad.socket
