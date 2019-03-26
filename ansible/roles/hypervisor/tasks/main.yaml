@@ -28,6 +28,7 @@
     done
     if [ -z "$disks" ]; then
       echo "all disks already used"
+      exit 0
     else
       echo "disks to be used are $disks"
     fi
@@ -39,7 +40,6 @@
       mkfs.ext4 /dev/libvirt/images 
       mount /dev/libvirt/images /var/lib/libvirt/images
     fi
-
 
 # NOTE: not sure why this is needed but is in above docs at this time
 - name: install qemu.conf 
