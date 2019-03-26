@@ -1,5 +1,6 @@
 ---
 
+# Create the packet.com nodes
 - import_playbook: provision-nodes.yml
 
 - hosts: localhost
@@ -8,4 +9,7 @@
     - name: refresh inventory after potential node creation
       meta: refresh_inventory
 
-- import_playbook: configure-nodes.yml
+# Configure 
+- import_playbook: configure-hypervisor.yml
+
+- import_playbook: configure-docker.yml
