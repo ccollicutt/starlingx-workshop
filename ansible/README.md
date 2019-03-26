@@ -1,6 +1,8 @@
-# starlingx-workshop
-
+# starlingx-workshop - Provisioning the Lab
+ 
 The Ansible playbooks and roles in this directory will create as many Packet.com nodes are needed in which to run a particular workshop. Each student is, at this time, expected to get one physical node. That physical node will be created and configured to run StarlingX in a libvirt based virtual machine. Once this playbook completes students will have a place to start their workshop.
+
+This is not intented for students to use. The instructors for the course would run this playbook to setup the lab for the students beforehand.
 
 ## Workshop Deployment
 
@@ -24,6 +26,12 @@ virtualenv ~/venv/starlingx-workshop
 pip install packet-python
 pip install ansible
 ```
+
+Install Docker role.
+
+```
+ansible-galaxy install geerlingguy.docker
+``` 
 
 Ensure you have a packet cloud API token, project ID, and ssh key name and that they are exported to your session.
 
