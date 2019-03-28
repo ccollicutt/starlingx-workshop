@@ -1,5 +1,12 @@
 ---
 
+# NOTE(curtis): Networking in the controller-0 vm will break thanks to docker
+# if this is not set. See https://github.com/docker/for-linux/issues/103
+- name: fix docker breaking nat networking for virtual machines
+  iptables:
+    chain: FORWARD
+    jump: ACCEPT
+
 - name: ensure requirements for pip are installed
   apt:
     name: "python-pip"
