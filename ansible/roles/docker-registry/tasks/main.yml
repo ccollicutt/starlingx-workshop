@@ -17,6 +17,20 @@
   pip:
     name: docker-py
 
+# FIXME: hardcoded IP
+# NOTE(curtis): for some reason this isn't an issue with localhost as the repo
+- name: install daemon.json for insecure registries
+  copy:
+    dest: "/etc/docker/daemon.json"
+    content: |
+      {
+        "insecure-registries" : ["10.10.10.1:5000"]
+      }
+  notify: restart docker
+
+- meta: flush_handlers
+
+# FIXME: hardcoded IP
 # TODO: ensure not listening on external IP
 - name: ensure docker registry container is running
   docker_container:
@@ -24,7 +38,7 @@
     image: registry:2
     state: started
     ports:
-     - "5000:5000"
+     - "10.10.10.1:5000:5000"
 
 - name: ensure stx container images directory exists 
   file:
@@ -62,11 +76,12 @@
     chdir: "{{ container_images_dir }}"
     executable: "/bin/bash"
 
+# FIXME: hardcoded IP
 # FIXME: shell, could be docker_image
 # NOTE(curtis): Removing the "repo" name from the images. Must be a better way?
 - name: push local docker images into local docker registry
   shell: |
-    repo="localhost:5000"
+    repo="10.10.10.1:5000"
     while read line; do
         image_name=`echo $line | cut -f 1 -d " "`
         image_tag=`echo $line | tr -s " " | cut -f 2 -d " "`
