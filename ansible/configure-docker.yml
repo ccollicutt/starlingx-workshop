@@ -6,3 +6,4 @@
   roles:
     - geerlingguy.docker
     - docker-registry
+    - horizon-proxy
