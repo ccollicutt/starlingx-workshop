@@ -1,0 +1,8 @@
+---
+
+- name: configure iptables masquerading for external network
+  iptables:
+    chain: POSTROUTING
+    table: nat
+    source: "{{ external_network }}"
+    jump: MASQUERADE

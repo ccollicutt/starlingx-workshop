@@ -1,0 +1,9 @@
+---
+
+# NOTE: not sure why this is needed but is in above docs at this time
+- name: install qemu.conf 
+  template:
+    src: "etc/libvirt/qemu.conf"
+    dest: "/etc/libvirt/qemu.conf"
+  notify:
+    - restart libvirt-bin

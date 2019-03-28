@@ -1,0 +1,22 @@
+---
+
+- name: download stx iso 
+  get_url:
+    url: "{{ iso_image }}"
+    dest: "{{ iso_image_install_dir }}/{{ iso_image | basename }}"
+    mode: 0440
+
+- name: ensure virtual machine backing images exist 
+  shell: |
+    qemu-img create -f qcow2 \
+    /var/lib/libvirt/images/{{ controller_name }}-{{ item.index }}.img \
+    {{ item.size }}G
+  args:
+    creates: "/var/lib/libvirt/images/{{ controller_name }}-{{ item.index }}.img"
+  with_items: "{{ controller_disks }}"
+    
+- name: define controller node 
+  virt:
+    command: "define"
+    name: "{{ controller_name }}"
+    xml:  "{{ lookup('template', 'etc/stx-workshop/controller_allinone.xml') }}"

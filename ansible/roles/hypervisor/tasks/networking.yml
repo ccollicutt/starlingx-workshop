@@ -1,0 +1,47 @@
+---
+
+- name: ensure /etc/network/interfaces sources /etc/network/interfaces.d/*
+  lineinfile:
+    path: /etc/network/interfaces
+    line: 'source /etc/network/interfaces.d/*'
+    create: yes
+
+- name: test for stx bridges
+  shell: ip ad sh | grep {{ bridge_basename }}
+  ignore_errors: True 
+  changed_when: False
+  register: stx_bridges
+
+# Create bridges if they don't exist
+- name: ensure stx bridges exist and are up
+  block:
+
+    # NOTE(curtis): the pre-up is the only way I could get this to work...
+    # wondering if could use dummy interfaces instead of a bridge
+
+    # FIXME: hardcoded IP
+    # stxbr1 is slightly different as it needs an IP
+    - name: create stxbr1 with ip address
+      copy:
+        dest: "/etc/network/interfaces.d/{{ bridge_basename }}1.cfg"
+        content: |
+          auto {{ bridge_basename }}1
+          iface {{ bridge_basename }}1 inet static
+            address 10.10.10.1/24
+            pre-up /sbin/ip link add {{ bridge_basename }}1 type bridge
+      notify: up interfaces
+
+    - name: create stxbr2,3,4
+      copy:
+        dest: "/etc/network/interfaces.d/{{ bridge_basename }}{{ item }}.cfg"
+        content: |
+          auto {{ bridge_basename }}{{ item }}
+          iface {{ bridge_basename }}{{ item }} inet manual
+            pre-up /sbin/ip link add {{ bridge_basename }}{{ item }} type bridge
+      with_sequence: start=2 end=4
+
+    - name: ensure stx bridge interfaces are up 
+      shell: ifup {{ bridge_basename }}{{ item }}
+      with_sequence: start=1 end=4
+
+  when: stx_bridges.rc != 0

@@ -1,0 +1,33 @@
+---
+
+- name: ensure lvm services are running and enabled 
+  service:
+    name: "{{ item }}"
+    state: "started"
+    enabled: True
+  with_items: "{{ lvm_services }}"
+
+# NOTE(curtis): This is a pretty brutal hack :)
+# FIXME shell
+- name: create a lvm of unused disks and mount to /var/lib/libvirt/images
+  shell: |
+    disks=""
+    for i in `lsblk -i -o kname -n | grep -v "[0-9]"`; do
+      if pvcreate /dev/$i; then 
+        disks="$disks /dev/$i "
+      fi
+    done
+    if [ -z "$disks" ]; then
+      echo "all disks already used"
+      exit 0
+    else
+      echo "disks to be used are $disks"
+    fi
+    if ! lvs libvirt/images; then
+      vgcreate libvirt $disks 
+      lvcreate -n images -l 100%FREE libvirt
+    fi 
+    if ! mount | grep libvirt-images; then
+      mkfs.ext4 /dev/libvirt/images 
+      mount /dev/libvirt/images /var/lib/libvirt/images
+    fi

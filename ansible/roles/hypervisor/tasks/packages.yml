@@ -1,0 +1,15 @@
+---
+
+# Following https://docs.starlingx.io/installation_guide/latest/installation_libvirt_qemu.html 
+# and related installation scripts.
+
+- name: ensure required packages are present
+  apt:
+    name: "{{ hypervisor_packages }}"
+    update_cache: True 
+    cache_valid_time: 600
+
+- name: ensure libvirt-python is installed (for virt module)
+  apt:
+    name: "python-libvirt"
+    
