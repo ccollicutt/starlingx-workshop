@@ -3,7 +3,7 @@
 - name: ensure stx-workshop-haproxy is running to proxy to virutal machine's horizon
   docker_container:
     name: stx-workshop-haproxy
-    image: serverascode/stx-workshop-haproxy
+    image: "{{ stx_workshop_haproxy }}"
     state: started
     ports:
      - "8080:8080"

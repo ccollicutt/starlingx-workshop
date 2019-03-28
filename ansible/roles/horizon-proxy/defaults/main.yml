@@ -1,0 +1,6 @@
+---
+
+# NOTE(curtis): This image needs to exist, but the dockerfile and config file to build it
+# is in this repository under "docker-images/stx-workshop-haproxy"
+
+stx_workshop_haproxy: "serverascode/stx-workshop-haproxy"
