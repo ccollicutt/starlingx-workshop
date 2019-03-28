@@ -5,5 +5,7 @@
     name: stx-workshop-haproxy
     image: "{{ stx_workshop_haproxy }}"
     state: started
+    pull: true
     ports:
      - "8080:8080"
+     - "8443:8443"
