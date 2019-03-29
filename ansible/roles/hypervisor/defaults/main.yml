@@ -18,9 +18,9 @@ controller_disks:
 
 bridge_basename: "stxbr"
 # FIXME: this will fall within 10/8 from packet
-external_network: "10.10.10.0/24"
-external_ip: "10.10.10.1/24"
 external_netmask_cidr: 24
+external_ip: "10.10.10.1/{{ external_network_mask }}"
+external_network: "10.10.10.0/{{ external_network_mask }}"
 
 lvm_services:
   - lvm2-lvmetad.service

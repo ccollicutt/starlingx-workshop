@@ -27,9 +27,8 @@
         content: |
           auto {{ bridge_basename }}1
           iface {{ bridge_basename }}1 inet static
-            address 10.10.10.1/24
+            address {{ external_ip }}
             pre-up /sbin/ip link add {{ bridge_basename }}1 type bridge
-      notify: up interfaces
 
     - name: create stxbr2,3,4
       copy:

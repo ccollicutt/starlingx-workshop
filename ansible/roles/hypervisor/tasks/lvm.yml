@@ -9,6 +9,7 @@
 
 # NOTE(curtis): This is a pretty brutal hack :)
 # FIXME shell
+# FIXME mount won't survive reboot
 - name: create a lvm of unused disks and mount to /var/lib/libvirt/images
   shell: |
     disks=""
