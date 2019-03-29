@@ -5,5 +5,4 @@
     - tag_stx_workshop
   roles:
     - geerlingguy.docker
-    - docker-registry
     - horizon-proxy
