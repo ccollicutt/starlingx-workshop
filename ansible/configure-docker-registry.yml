@@ -1,0 +1,7 @@
+---
+
+- hosts: 
+    #- tag_stx_workshop_util
+    - tag_stx_workshop
+  roles:
+    - docker-registry

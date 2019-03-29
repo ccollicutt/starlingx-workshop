@@ -13,39 +13,38 @@
     state: latest
     update_cache: true
 
-- name: install docker pip requirements 
+- name: install ansible docker modules pip requirements 
   pip:
     name: docker-py
 
-# FIXME: hardcoded IP
-# NOTE(curtis): for some reason this isn't an issue with localhost as the repo
+#NOTE(curtis): for some reason this isn't an issue with localhost as the repo
 - name: install daemon.json for insecure registries
   copy:
     dest: "/etc/docker/daemon.json"
     content: |
       {
-        "insecure-registries" : ["10.10.10.1:5000"]
+        "insecure-registries" : ["{{ container_registry }}"]
       }
   notify: restart docker
 
-- meta: flush_handlers
+- name: flush handlers
+  meta: flush_handlers
 
-# FIXME: hardcoded IP
-# TODO: ensure not listening on external IP
+#TODO: ensure not listening on external IP
 - name: ensure docker registry container is running
   docker_container:
     name: registry
     image: registry:2
     state: started
     ports:
-     - "10.10.10.1:5000:5000"
+     - "{{ container_registry }}:5000"
 
 - name: ensure stx container images directory exists 
   file:
     path: "{{ container_images_dir }}"
     state: "directory"
 
-# NOTE(curtis): I created this image file that contains all necessary images
+#NOTE(curtis): I created this image file that contains all necessary images
 - name: download and unarchive container images tar file
   unarchive:
     src: "{{ container_images_tar_file_url }}"
@@ -53,52 +52,21 @@
     remote_src: True
     creates: "{{ container_images_dir }}/images.txt"
 
-# FIXME: shell, could be docker_image
-# NOTE(curtis): docker import does not keep the entrypoint cmd, must use
-# docker load
-- name: load docker images from files into local docker 
-  shell: |
-    while read line; do
-        image_name=`echo $line | cut -f 1 -d " "`
-        image_tag=`echo $line | tr -s " " | cut -f 2 -d " "`
-        clean_image_name=`echo $line | sed "s/\//_/g" | cut -f 1 -d " "`
-        clean_image_tag=`echo $line | tr -s " " | sed "s/\//_/g" | cut -f 2 -d " "`
-        echo "image is $image_name"
-        echo "tag is $image_tag"
-        save_file=$clean_image_name-$clean_image_tag.tgz
-        if [[ "$(docker images -q $image_name:$image_tag 2> /dev/null)" != "" ]]; then
-            echo "$image_name:$image_tag already exists, skipping..."
-        else
-            docker load -i $save_file
-        fi
-    done < images.txt
-  args:
-    chdir: "{{ container_images_dir }}"
-    executable: "/bin/bash"
+# NOTE(curtis): If I use the short name then every time this runs any images
+# that are from a non-dockerhub repo are marked as changed, and don't get
+# the short name anyways. I was hoping to do this in one step, but it seems
+# like have to first load the images then push them.
+- name: load images from tgz files to local docker
+  docker_image:
+    name: "{{ item.name }}"
+    tag: "{{ item.tag }}"
+    load_path: "{{ container_images_dir }}/{{ item.file_name }}"
+  with_items: "{{ container_images }}"
 
-# FIXME: hardcoded IP
-# FIXME: shell, could be docker_image
-# NOTE(curtis): Removing the "repo" name from the images. Must be a better way?
-- name: push local docker images into local docker registry
-  shell: |
-    repo="10.10.10.1:5000"
-    while read line; do
-        image_name=`echo $line | cut -f 1 -d " "`
-        image_tag=`echo $line | tr -s " " | cut -f 2 -d " "`
-        echo "image is $image_name"
-        echo "tag is $image_tag"
-        if [[ "$image_name" =~ quay* ]] ; then
-            short_name=${image_name#"quay.io/"}
-        elif [[ "$image_name" =~ k8s* ]] ; then
-            short_name=${image_name#"k8s.gcr.io/"} 
-        elif [[ "$image_name" =~ gcr* ]]  ; then
-            short_name=${image_name#"gcr.io/"}
-        else
-            short_name=$image_name
-        fi
-        docker tag $image_name:$image_tag $repo/$short_name:$image_tag
-        docker push $repo/$short_name:$image_tag
-    done < images.txt
-  args:
-    chdir: "{{ container_images_dir }}"
-    executable: "/bin/bash"
+- name: tag images in local docker and push to local registry
+  docker_image:
+     name: "{{ item.name }}"
+     repository: "{{ container_registry }}/{{ item.short_name }}"
+     tag: "{{ item.tag }}"
+     push: yes
+  with_items: "{{ container_images }}"
