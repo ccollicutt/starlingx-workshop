@@ -1,0 +1,31 @@
+---
+
+- name: allow password ssh logins
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^##PasswordAuthentication yes'
+    line: 'PasswordAuthentication yes'
+    backrefs: yes
+  notify: restart ssh
+
+- name: ensure a student users exists
+  user:
+    name: "{{ student_name }}"
+    password: "{{ student_password  | password_hash('sha512', 'mysecretsalt') }}"
+    groups: 
+     - sudo
+    shell: "/bin/bash"
+    state: present
+
+- name: create a file that contains all access information
+  template:
+    src: "access.txt"
+    dest: "/tmp/access.txt"
+
+- name: fetch /tmp/access.txt
+  fetch:
+    src: "/tmp/access.txt"
+    dest: "./access.txt"
+    flat: True
+  run_once: True
+

@@ -1,0 +1,6 @@
+---
+
+- hosts:
+    - tag_stx_workshop
+  roles:
+    - student-access

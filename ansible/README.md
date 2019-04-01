@@ -57,6 +57,24 @@ ansible-playbook all.yml
 
 At this point you should have as many nodes as you requested ready to run `virsh start controller-0` on.
 
+## Access Information
+
+Once the `all.yml` playbook has completed without error, a local `access.txt` file will exist that lists out all of the IP addresses associated with the lab, the student user, and password for that node. This could be copied and pasted into an etherpad for the lab.
+
+```
+$ # Eg. output, only 2 nodes
+$ cat access.txt 
+<public IP node 1>,student,P@ssw0rd
+<public IP node 2>,student,P@ssw0rd
+```
+
+Users can then ssh into the nodes with:
+
+```
+$ ssh student@<public IP 1>
+$ # enter password of "P@ssw0rd"
+```
+
 ## Delete Infrastructure
 
 Set `packet_node_state` to absent.
