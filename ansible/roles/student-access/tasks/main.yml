@@ -11,7 +11,7 @@
 - name: ensure a student users exists
   user:
     name: "{{ student_name }}"
-    password: "{{ student_password  | password_hash('sha512', 'mysecretsalt') }}"
+    password: "{{ student_password  | password_hash('sha512', 'insecuresalt') }}"
     groups: 
      - sudo
     shell: "/bin/bash"
