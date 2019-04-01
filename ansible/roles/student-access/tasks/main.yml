@@ -8,6 +8,14 @@
     backrefs: yes
   notify: restart ssh
 
+- name: ensure sudo group users can sudo without a password
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%sudo"
+    line: "%sudo ALL=(ALL) NOPASSWD: ALL"
+    validate: "visudo -cf %s"
+
 - name: ensure a student users exists
   user:
     name: "{{ student_name }}"
