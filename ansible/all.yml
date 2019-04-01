@@ -9,8 +9,9 @@
     - name: refresh inventory after potential node creation
       meta: refresh_inventory
 
-# Configure 
 - import_playbook: configure-hypervisor.yml
+
+- import_playbook: configure-student-access.yml
 
 - import_playbook: configure-docker.yml
 
