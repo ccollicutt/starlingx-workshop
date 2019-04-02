@@ -13,6 +13,7 @@
 
 - import_playbook: configure-student-access.yml
 
+- import_playbook: configure-docker-registry.yml
+
 - import_playbook: configure-docker.yml
 
-- import_playbook: configure-docker-registry.yml
