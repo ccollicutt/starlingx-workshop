@@ -1,8 +1,5 @@
 ---
 
-# Following https://docs.starlingx.io/installation_guide/latest/installation_libvirt_qemu.html 
-# and related installation scripts.
-
 - name: ensure required packages are present
   apt:
     name: "{{ hypervisor_packages }}"
@@ -12,4 +9,14 @@
 - name: ensure libvirt-python is installed (for virt module)
   apt:
     name: "python-libvirt"
-    
+
+# For docker
+- name: ensure requirements for pip are installed
+  apt:
+    name: "python-pip"
+    state: latest
+    update_cache: true
+
+- name: install ansible docker modules pip requirements 
+  pip:
+    name: docker-py

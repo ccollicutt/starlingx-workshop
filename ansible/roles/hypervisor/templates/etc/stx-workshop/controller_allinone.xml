@@ -49,7 +49,7 @@
     </disk>
     <disk type='file' device='cdrom'>
       <driver name='qemu' type='raw'/>
-      <source file='{{ iso_image_install_dir }}/bootimage.iso'/>
+      <source file='{{ iso_image_install_dir }}/{{ iso_image | basename }}'/>
       <backingStore/>
       <target dev='sdd' bus='sata'/>
       <readonly/>
