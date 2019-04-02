@@ -8,16 +8,6 @@
     chain: FORWARD
     jump: ACCEPT
 
-- name: ensure requirements for pip are installed
-  apt:
-    name: "python-pip"
-    state: latest
-    update_cache: true
-
-- name: install ansible docker modules pip requirements 
-  pip:
-    name: docker-py
-
 #NOTE(curtis): for some reason this isn't an issue with localhost as the repo
 - name: install daemon.json for insecure registries
   copy:
@@ -45,6 +35,11 @@
     path: "{{ container_images_dir }}"
     state: "directory"
 
+# FIXME: better check here
+- name: check if tgz images already exist 
+  shell: ls {{ container_images_dir }}/*.tgz
+  register: ls_container_images
+
 #NOTE(curtis): I created this image file that contains all necessary images
 - name: download and unarchive container images tar file
   unarchive:
@@ -52,6 +47,7 @@
     dest: "{{ container_images_dir }}"
     remote_src: True
     creates: "{{ container_images_dir }}/images.txt"
+  when: ls_container_images.rc != 0
 
 # NOTE(curtis): If I use the short name then every time this runs any images
 # that are from a non-dockerhub repo are marked as changed, and don't get
