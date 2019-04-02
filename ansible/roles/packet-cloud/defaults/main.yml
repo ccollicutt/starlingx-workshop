@@ -5,5 +5,10 @@ workshop_tag: "stx_workshop"
 # packet config 
 packet_os: "ubuntu_16_04"
 packet_facility: "ewr1"
-packet_plan: "c2.medium.x86"
+
+# Good options: c2.medium.x86 c1.small.x86
+# c1.small doesn't have a lot of disk, but it's actually enough to run AIO-SX
+# in a vm, though if it ran for long enough presumably would run out of disk
+# as by default we are doing 1TB of disk...
+packet_plan: "c1.small.x86"
 packet_node_state: "active"
