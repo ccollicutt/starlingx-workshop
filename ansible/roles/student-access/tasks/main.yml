@@ -13,8 +13,7 @@
 - name: disable metadata warnings 
   copy:
     dest: "/var/lib/cloud/instance/warnings/.skip"
-    content: |
-      empty
+    content: ""
 
 - name: allow password ssh logins
   lineinfile:
