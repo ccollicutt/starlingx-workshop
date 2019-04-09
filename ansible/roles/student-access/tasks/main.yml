@@ -3,7 +3,7 @@
 - name: allow password ssh logins
   lineinfile:
     path: /etc/ssh/sshd_config
-    regexp: '^##PasswordAuthentication yes'
+    regexp: '^#PasswordAuthentication yes'
     line: 'PasswordAuthentication yes'
     backrefs: yes
   notify: restart ssh
