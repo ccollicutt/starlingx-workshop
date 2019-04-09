@@ -75,6 +75,10 @@ $ ssh student@<public IP 1>
 $ # enter password of "P@ssw0rd"
 ```
 
+## More than Two Workshops in the Same Packet.com Account
+
+If for some reason we need to have more than two workshops running in the same Packet.com account, change the `workshop_tag` variable in the `packet-cloud` role so that each workshop uses a different tag. Then change the use of the `tag_stx_workshop` in the various top level playbooks. (This could be greatly improved.)
+
 ## Delete Infrastructure
 
 Set `packet_node_state` to absent.
