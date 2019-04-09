@@ -1,5 +1,21 @@
 ---
 
+- name: setup message of the day
+  copy:
+    dest: "/etc/motd"
+    content: |
+      **************************************************************************
+      #                                                                        #
+      #      This system is only for use during a StarlingX workshop.          #
+      #                                                                        #
+      **************************************************************************
+
+- name: disable metadata warnings 
+  copy:
+    dest: "/var/lib/cloud/instance/warnings/.skip"
+    content: |
+      empty
+
 - name: allow password ssh logins
   lineinfile:
     path: /etc/ssh/sshd_config

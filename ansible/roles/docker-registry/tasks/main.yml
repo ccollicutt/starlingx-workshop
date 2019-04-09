@@ -39,6 +39,7 @@
 - name: check if tgz images already exist 
   shell: ls {{ container_images_dir }}/*.tgz
   register: ls_container_images
+  ignore_errors: True
 
 #NOTE(curtis): I created this image file that contains all necessary images
 - name: download and unarchive container images tar file
