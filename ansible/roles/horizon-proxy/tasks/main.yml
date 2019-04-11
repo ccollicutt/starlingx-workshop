@@ -5,7 +5,11 @@
     name: stx-workshop-haproxy
     image: "{{ stx_workshop_haproxy }}"
     state: started
+    # Always pull the latest
     pull: true
+    # If the container stops, say because some of the ports on the stx
+    # node aren't listening yet, then restart.
+    restart_policy: "always"
     ports:
      - "8080:8080"
      - "8443:8443"
