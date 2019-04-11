@@ -40,6 +40,7 @@
     shell: "/bin/bash"
     state: present
 
+# FIXME: should delegate and just run once
 - name: create a file that contains all access information
   template:
     src: "access.txt"
