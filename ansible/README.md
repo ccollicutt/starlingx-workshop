@@ -23,8 +23,7 @@ Create a virtual env and installed required Python pip packages.
 ```
 virtualenv ~/venv/starlingx-workshop
 . ~/venv/starlingx-workshop/bin/activate
-pip install packet-python
-pip install ansible
+pip install -r requirements.txt
 ```
 
 Install Docker role.
@@ -41,6 +40,12 @@ export PACKET_API_TOKEN=<token>
 export PACKET_KEY_NAME=<key name>
 ```
 
+At this point the inventory script should work.
+
+```
+./inventory/packet_net.py
+```
+
 Set the number of students. Either:
 
 1. Do nothing, and by default two students are assumed
@@ -55,7 +60,7 @@ Run the playbook.
 ansible-playbook all.yml
 ```
 
-At this point you should have as many nodes as you requested ready to run `virsh start controller-0` on.
+At this point you should have as many nodes as you requested ready to run `virsh start simplex-controller-0` on.
 
 ## Access Information
 
@@ -64,8 +69,11 @@ Once the `all.yml` playbook has completed without error, a local `access.txt` fi
 ```
 $ # Eg. output, only 2 nodes
 $ cat access.txt 
-<public IP node 1>,student,P@ssw0rd
-<public IP node 2>,student,P@ssw0rd
+(starlingx-workshop) [curtis@ash ansible]$ cat access.txt 
+# Paste the below into https://etherpad.openstack.org/p/stx-workshop-access
+1. Public IP: <public IP node 1>, User Name: student, Password: P@ssw0rd, OpenStack Horizon: http://<public IP node 1>:8080
+2. Public IP: <public IP node 2>, User Name: student, Password: P@ssw0rd, OpenStack Horizon: http://<public IP node 2>:8080
+
 ```
 
 Users can then ssh into the nodes with:
