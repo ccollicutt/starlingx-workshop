@@ -32,26 +32,3 @@ done < images.txt
 
 # curl -s -X GET http://localhost:5000/v2/_catalog
 # curl -s -X GET http://10.99.235.9:5000/v2/_catalog
-
-
-# while read line; do
-#   image_name=`echo $line | cut -f 1 -d " "`
-#   image_tag=`echo $line | tr -s " " | cut -f 2 -d " "`
-#   echo "image is $image_name"
-#   echo "tag is $image_tag"
-#   short_name=`echo $image_name | cut -f 2 -d "/"`
-#   echo "short_name is $short_name"
-#   docker tag $image_name:$image_tag $repo/$short_name:$image_tag
-#   # During install config_controller is looking for repo/shortname not the entire name I hav
-#   docker push $repo/$short_name:$image_tag
-# done < k8s-images.txt
-
-
-# Alternative registry to k8s.gcr.io: 10.99.235.9:5000
-# Alternative registry to gcr.io: 10.99.235.9:5000
-# Alternative registry to quay.io: 10.99.235.9:5000
-# Alternative registry to docker.io: 
-
-
-
-curl -F "file=@controller-0_20190321.125831.tar" https://file.io
