@@ -1,11 +1,41 @@
 ---
 
+# NOTE(curtis): Orig used mirrors b/c ubuntu main site was down, but now also
+# mirrors often fail. You can't win. Honestly need to archive required packages
+# too.
+- name: set apt use to use mirrors for sources.list
+  copy:
+    dest: "/etc/apt/sources.list"
+    content: |
+      deb mirror://mirrors.ubuntu.com/mirrors.txt xenial main universe
+      deb mirror://mirrors.ubuntu.com/mirrors.txt xenial-updates main universe
+      deb mirror://mirrors.ubuntu.com/mirrors.txt xenial-security main universe
+  when: hypervisor_use_apt_mirrors
+  register: hypervisor_new_mirrors
+
+# NOTE(curtis): In packet.com nodes this is default, but explicitly setting
+# here, though maybe don't need to.
+- name: set apt use to use archive.ubuntu.com for sources.list
+  copy:
+    dest: "/etc/apt/sources.list"
+    content: |
+      deb http://archive.ubuntu.com/ubuntu/ xenial main universe
+      deb http://archive.ubuntu.com/ubuntu/ xenial-updates main universe
+      deb http://archive.ubuntu.com/ubuntu/ xenial-security main universe
+  when: not hypervisor_use_apt_mirrors
+
+- name: update apt cache
+  apt:
+    update_cache: True
+
+# FIXME: add retries?
 - name: ensure required packages are present
   apt:
     name: "{{ hypervisor_packages }}"
     update_cache: True 
     cache_valid_time: 600
 
+# FIXME: combine packages?
 - name: ensure libvirt-python is installed (for virt module)
   apt:
     name: "python-libvirt"
