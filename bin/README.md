@@ -1,0 +1,1 @@
+These are not great scripts. Most of them were used initially to create a docker repository. They are at least examples though. :)
