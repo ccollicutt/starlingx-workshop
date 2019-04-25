@@ -6,3 +6,11 @@
 - include: libvirt.yml
 - include: lvm.yml
 - include: virtual-machines.yml
+
+- name: install reset workshop script from template
+  template:
+    src: "usr/local/bin/stx-reset-workshop"
+    dest: "/usr/local/bin/stx-reset-workshop"
+    mode: "0755"
+  tags:
+    - reset_script

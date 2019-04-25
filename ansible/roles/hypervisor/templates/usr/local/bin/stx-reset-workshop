@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if [[ $EUID -ne 0 ]]; then
+   echo "ERROR: This script must be run as root, please use sudo" 
+   exit 1
+fi
+
+while true; do
+    read -p "Do you want to reset your workshop? y/n " yn
+    case $yn in
+        [Yy]* ) break;;
+        [Nn]* ) exit;;
+        * ) echo "Please answer y for yes or n for no.";;
+    esac
+done
+
+echo "INFO: deleting current simplex-controller-0"
+virsh destroy simplex-controller-0 2>&1 > /dev/null
+
+echo "INFO: removing exiting backing images"
+rm -f /var/lib/libvirt/images/simplex-controller-0-{0,1,2}.img
+
+echo "INFO: recreating backing images"
+qemu-img create -f qcow2 /var/lib/libvirt/images/simplex-controller-0-0.img 600G > /dev/null
+qemu-img create -f qcow2 /var/lib/libvirt/images/simplex-controller-0-1.img 200G > /dev/null
+qemu-img create -f qcow2 /var/lib/libvirt/images/simplex-controller-0-2.img 200G > /dev/null
+
+echo "INFO: completed reset, please run virsh start simplex-controller-0"
+exit 0
