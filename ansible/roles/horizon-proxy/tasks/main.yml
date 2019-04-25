@@ -11,5 +11,4 @@
     # node aren't listening yet, then restart.
     restart_policy: "always"
     ports:
-     - "8080:8080"
-     - "8443:8443"
+     - "31000:31000"
