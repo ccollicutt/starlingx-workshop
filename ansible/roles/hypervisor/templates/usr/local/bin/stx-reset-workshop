@@ -17,7 +17,7 @@ done
 echo "INFO: deleting current simplex-controller-0"
 virsh destroy simplex-controller-0 2>&1 > /dev/null
 
-echo "INFO: removing exiting backing images"
+echo "INFO: removing existing backing images"
 rm -f /var/lib/libvirt/images/simplex-controller-0-{0,1,2}.img
 
 echo "INFO: recreating backing images"
