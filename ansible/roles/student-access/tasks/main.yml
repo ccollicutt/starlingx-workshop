@@ -31,14 +31,28 @@
     line: "%sudo ALL=(ALL) NOPASSWD: ALL"
     validate: "visudo -cf %s"
 
+# NOTE: inventory_hostname is the public IP
+- name: generate a predictable "password"
+  shell: echo {{ inventory_hostname }} | md5sum | cut -c1-10
+  register: hostname_as_password
+
+- name: set password as a fact
+  set_fact:
+    hostname_as_password: "{{ hostname_as_password.stdout | trim }}"
+
 - name: ensure a student users exists
   user:
     name: "{{ student_name }}"
-    password: "{{ student_password  | password_hash('sha512', 'insecuresalt') }}"
+    password: "{{ hostname_as_password  | password_hash('sha512', 'insecuresalt') }}"
     groups: 
      - sudo
     shell: "/bin/bash"
     state: present
+
+# FIXME: better way to do this
+- name: test ssh connectivity for user 
+  shell: sshpass -p {{ hostname_as_password }} ssh {{ student_name }}@{{ inventory_hostname }} hostname
+  delegate_to: localhost
 
 # FIXME: should delegate and just run once
 - name: create a file that contains all access information

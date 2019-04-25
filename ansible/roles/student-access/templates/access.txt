@@ -1,4 +1,4 @@
 # Paste the below into https://etherpad.openstack.org/p/stx-workshop-access
 {% for host in groups['tag_stx_workshop'] %}
-{{loop.index}}. Public IP: {{ hostvars[host].ansible_bond0.ipv4.address }}, User Name: {{ student_name }}, Password: {{ student_password }}, OpenStack Horizon: http://{{ hostvars[host].ansible_bond0.ipv4.address }}:8080
+{{loop.index}}. Hostname: {{ hostvars[host].packet_hostname }}  Public IP: {{ hostvars[host].ansible_bond0.ipv4.address }} User Name: {{ student_name }} Password: {{ hostvars[host].hostname_as_password }}  OpenStack Horizon: http://{{ hostvars[host].ansible_bond0.ipv4.address }}:8080
 {% endfor %}
