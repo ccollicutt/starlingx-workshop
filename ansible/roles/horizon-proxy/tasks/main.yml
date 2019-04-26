@@ -12,3 +12,4 @@
     restart_policy: "always"
     ports:
      - "31000:31000"
+     - "8080:8080"
