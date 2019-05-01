@@ -4,3 +4,10 @@
 num_students: 2
 
 
+# NOTE(curtis): we can't just spin up unlimited nodes in each region, we
+# actually need to specify multiple regions.
+packet_environments:
+  - region: "ewr1"
+    num_nodes: "10"
+  - region: "nrt1"
+    num_nodes: "10"

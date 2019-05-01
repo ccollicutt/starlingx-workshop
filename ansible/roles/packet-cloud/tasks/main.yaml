@@ -4,16 +4,18 @@
 - name: add or remove physical servers in packet cloud
   packet_node:
     project_id: "{{ lookup('env','PACKET_PROJECT_ID') }}"
-    hostnames: "stx-workshop-%d"
-    count: "{{ num_students }}"
+    hostnames: "stx-workshop-{{ item.region }}-%d"
+    count: "{{ item.num_nodes }}"
     operating_system: "{{ packet_os }}"
     plan: "{{ packet_plan }}"
-    facility: "{{ packet_facility }}"
+    facility: "{{ item.region }}"
     state: "{{ packet_node_state }}"
-    tags: 
+    tags:
       - "{{ workshop_tag }}"
   register: packet_nodes
+  loop: "{{ packet_environments }}"
 
 - debug:
     msg: "{{ packet_nodes }}"
     verbosity: 2
+  
