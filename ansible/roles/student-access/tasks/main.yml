@@ -10,7 +10,7 @@
       #                                                                        #
       **************************************************************************
 
-- name: disable metadata warnings 
+- name: disable cloud metadata warnings 
   copy:
     dest: "/var/lib/cloud/instance/warnings/.skip"
     content: ""
@@ -22,6 +22,9 @@
     line: 'PasswordAuthentication yes'
     backrefs: yes
   notify: restart ssh
+
+- name: flush handlers
+  meta: flush_handlers
 
 - name: ensure sudo group users can sudo without a password
   lineinfile:
@@ -35,12 +38,16 @@
 - name: generate a predictable "password"
   shell: echo {{ inventory_hostname }} | md5sum | cut -c1-10
   register: hostname_as_password
+  tags:
+    - access_file
 
 - name: set password as a fact
   set_fact:
     hostname_as_password: "{{ hostname_as_password.stdout | trim }}"
+  tags:
+    - access_file
 
-- name: ensure a student users exists
+- name: ensure a student user exists
   user:
     name: "{{ student_name }}"
     password: "{{ hostname_as_password  | password_hash('sha512', 'insecuresalt') }}"
@@ -59,6 +66,10 @@
   template:
     src: "access.txt"
     dest: "/tmp/access.txt"
+  delegate_to:  "{{ groups.tag_stx_workshop | first }}"
+  run_once: True
+  tags:
+    - access_file
 
 - name: fetch /tmp/access.txt
   fetch:
@@ -66,4 +77,6 @@
     dest: "./access.txt"
     flat: True
   run_once: True
-
+  delegate_to:  "{{ groups.tag_stx_workshop | first }}"
+  tags:
+    - access_file
