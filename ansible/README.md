@@ -46,15 +46,21 @@ At this point the inventory script should work.
 ./inventory/packet_net.py
 ```
 
-Set the number of students. Either:
+Set the number of nodes to deploy (one node per student). Packet.com has regions. Sometimes it's not possible to get all the nodes needed for the workshop in one region. Thus, when specifying the number of nodes, regions can also be expressed in the yaml file. Configure the `packet_environments` variable in the `group_vars/all.yml` file.
 
-1. Do nothing, and by default two students are assumed
-1. Edit the `group_vars/all.yml` file and change the number of students
-1. Provide `num_students` on the command line when invoking the playbook, eg. `-e "num_students=10"`
+Eg. The below would create 10 nodes in both `ewr1` and `nrt1` for a total of 20 nodes.
+
+```
+packet_environments:
+  - region: "ewr1"
+    num_nodes: "10"
+  - region: "nrt1"
+    num_nodes: "10"
+```
 
 Run the playbook.
 
-*NOTE: It may take several minutes for the packet.com nodes to become available.*
+*NOTE: It may take several minutes for the packet.com nodes to become available. A full run through a large number of nodes could take an hour or more.*
 
 ```
 ansible-playbook all.yml
@@ -73,7 +79,6 @@ $ cat access.txt
 # Paste the below into https://etherpad.openstack.org/p/stx-workshop-access
 1. Public IP: <public IP node 1>, User Name: student, Password: P@ssw0rd, OpenStack Horizon: http://<public IP node 1>:8080
 2. Public IP: <public IP node 2>, User Name: student, Password: P@ssw0rd, OpenStack Horizon: http://<public IP node 2>:8080
-
 ```
 
 Users can then ssh into the nodes with:
@@ -82,6 +87,10 @@ Users can then ssh into the nodes with:
 $ ssh student@<public IP 1>
 $ # enter password of "P@ssw0rd"
 ```
+
+## Options
+
+* `hypervisor_use_apt_mirrors` - default is True, and will set to use apt mirrors in `sources.list`
 
 ## More than Two Workshops in the Same Packet.com Account
 
