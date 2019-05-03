@@ -6,6 +6,42 @@ This is not intended for students to use. The instructors for the course would r
 
 ## Workshop Deployment
 
+### Workshop Artifacts
+
+There are a few binary artifacts that are used in this archive.
+
+1. StarlingX ISO
+1. Helm Charts package
+1. Tar file of container images 
+
+Without those three things the Ansible for this workshop will fail.
+
+**StarlingX ISO**
+
+The STX ISO is currently generated on [CENGN's mirror](http://mirror.starlingx.cengn.ca/mirror/starlingx/). The ISOs are only on that site for a limted about of time (days, weeks, but not indefinitely). To run this workshop one would download that ISO and place it in a more permanent place.
+
+* Role: hypervisor
+* Config option: `iso_image`
+
+**Helm Charts File**
+
+The Helm charts package is also currently generated on the CENGN site during daily builds. It would need to be managed exactly like the ISO.
+
+* Only used in the workshop document, but it is *required*
+
+**Tar File of Container Images**
+
+This is a more complicated piece of work. In the case of this workshop, a manual deployment of the ISO is done, followed by initial configuration of STX and OpenStack. Then the images used in the deployment are exported and saved into a large tar file. The Ansible playbooks then use that tar file to install a local registry.
+
+There are scripts in the [bin](../bin/) directory of this repository that provide some examples of how to do that.
+
+In the future perhaps STX will provide an easier way to manage the container images for offline depoyments.
+
+* Role: docker-registry
+* Config option: `container_images_tar_file_url`
+
+### Using Ansible
+
 Clone this repository.
 
 ```
