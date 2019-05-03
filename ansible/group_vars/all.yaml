@@ -8,6 +8,6 @@ num_students: 2
 # actually need to specify multiple regions.
 packet_environments:
   - region: "ewr1"
-    num_nodes: "10"
+    num_nodes: "1"
   - region: "nrt1"
-    num_nodes: "10"
+    num_nodes: "1"
