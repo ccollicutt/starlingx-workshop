@@ -1,6 +1,6 @@
 ---
 
-container_images_tar_file_url: "https://s3.ca-central-1.amazonaws.com/stx-workshop-artifacts/stx-20190407T233001Z-images.tar"
+container_images_tar_file_url: ""
 container_images_dir: "/var/lib/stx-container-images"
 container_registry: "10.10.10.1:5000"
 

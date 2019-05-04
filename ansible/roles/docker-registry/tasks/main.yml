@@ -1,5 +1,11 @@
 ---
 
+- name: ensure container_images_tar_file_url variable is defined
+  assert:
+    that:
+      - "{{ container_images_tar_file_url }} is defined"
+      - "{{ container_images_tar_file_url | length }} > 0"
+
 # FIXME: this is not the right spot for this
 # NOTE(curtis): Networking in the controller-0 vm will break thanks to docker
 # if this is not set. See https://github.com/docker/for-linux/issues/103

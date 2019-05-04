@@ -1,5 +1,11 @@
 ---
 
+- name: ensure iso_image variable is defined
+  assert:
+    that:
+      - "{{ iso_image }} is defined"
+      - "{{ iso_image | length }} > 0"
+
 - include: packages.yml
 - include: networking.yml
 - include: iptables.yml
